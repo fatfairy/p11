@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--1、开启注解扫描-->
+    <context:component-scan base-package="com.qf.p11"></context:component-scan>
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+    <context:annotation-config></context:annotation-config>
+
+
+
+    <!--2、配置数据源-->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="password" value="${jdbc.password}"></property>
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="username" value="${jdbc.username}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+    </bean>
+
+    <!--3、整合mybatis-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <value>
+                            helperDialect=mysql
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+<!--        <property name="typeAliasesPackage" value="com.qf.p11.pojo"></property>-->
+        <property name="configLocation" value="classpath:SqlMapConfig.xml"></property>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+
+    </bean>
+
+    <!--4、配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+
+    <!--5、配置事务管理策略-->
+    <tx:advice id="tx" transaction-manager="transactionManager">
+        <tx:attributes>
+<!--            <tx:method name="*"-->
+<!--            read-only="false"-->
+<!--            propagation="REQUIRED"-->
+<!--            isolation="DEFAULT"/>-->
+
+            <!--配置传播行为 在事务嵌套中有效果-->
+            <tx:method name="query*" propagation="SUPPORTS"></tx:method>
+            <tx:method name="get*" propagation="SUPPORTS"></tx:method>
+
+            <tx:method name="add*" rollback-for="exception"></tx:method>
+            <tx:method name="update*" rollback-for="exception"></tx:method>
+            <tx:method name="delete*" rollback-for="exception"></tx:method>
+            <tx:method name="remove*" rollback-for="exception"></tx:method>
+        </tx:attributes>
+
+
+    </tx:advice>
+
+    <!--6、AOP配置-->
+    <aop:config>
+        <aop:pointcut id="p1" expression="execution(* com.qf.p11.service..*.*(..))"/>
+        <aop:advisor advice-ref="tx" pointcut-ref="p1"></aop:advisor>
+    </aop:config>
+
+    <!--7、配置mapper接口扫描,创建对应接口的代理类-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.qf.p11.mapper"></property>
+    </bean>
+
+</beans>

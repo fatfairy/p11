@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.p11.mapper.ItemMapper">
+
+    <resultMap id="BaseResultMap" type="com.qf.p11.pojo.Item">
+            <id property="iId" column="i_id" jdbcType="INTEGER"/>
+            <result property="oId" column="o_id" jdbcType="VARCHAR"/>
+            <result property="pId" column="p_id" jdbcType="INTEGER"/>
+            <result property="iCount" column="i_count" jdbcType="DECIMAL"/>
+            <result property="iNum" column="i_num" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        i_id,o_id,p_id,
+        i_count,i_num
+    </sql>
+
+    <sql id="NoID_Column_List">
+        o_id,p_id,
+        i_count,i_num
+    </sql>
+    
+    <insert id="insertBatch">
+        insert into item
+        (<include refid="NoID_Column_List"></include>)
+        values
+
+         <foreach index="i" item="item" collection="itemDTOS" separator=",">
+             (#{oId},#{item.pId},#{item.count},#{item.num})
+         </foreach>
+
+    </insert>
+
+    <select id="selectProductForInsert" resultType="com.qf.p11.dto.ItemDTO">
+        SELECT num,num*p_price count,pid
+        FROM(
+            SELECT id,pid,cid,num,p_price FROM cart_product
+            INNER JOIN product ON cart_product.pid = product.p_id
+        ) t1 INNER JOIN cart ON t1.cid=cart.c_id
+        WHERE u_id=#{uId}
+    </select>
+</mapper>

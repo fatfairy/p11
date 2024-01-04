@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.p11.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.qf.p11.pojo.User">
+            <id property="uId" column="u_id" jdbcType="INTEGER"/>
+            <result property="uName" column="u_name" jdbcType="VARCHAR"/>
+            <result property="uPassword" column="u_password" jdbcType="VARCHAR"/>
+            <result property="uEmail" column="u_email" jdbcType="VARCHAR"/>
+            <result property="uSex" column="u_sex" jdbcType="VARCHAR"/>
+            <result property="uStatus" column="u_status" jdbcType="INTEGER"/>
+            <result property="uCode" column="u_code" jdbcType="VARCHAR"/>
+            <result property="uRole" column="u_role" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        u_id,u_name,u_password,
+        u_email,u_sex,u_status,
+        u_code,u_role
+    </sql>
+
+    <select id="selectAllUser" resultType="user">
+        select
+            <include refid="Base_Column_List"></include>
+        from user
+    </select>
+
+    <insert id="insertSingleUser">
+        insert into user
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="uName!=null">
+                    u_name,
+                </if>
+
+                <if test="uPassword!=null">
+                    u_password,
+                </if>
+                <if test="uEmail!=null">
+                    u_email,
+                </if>
+                <if test="uSex!=null">
+                    u_sex,
+                </if>
+                <if test="uStatus!=null">
+                    u_status,
+                </if>
+                <if test="uCode!=null">
+                    u_code,
+                </if>
+                <if test="uRole!=null">
+                    u_role,
+                </if>
+            </trim>
+        values
+
+            <trim suffix=")" prefix="(" suffixOverrides=",">
+                <if test="uName!=null">
+                    #{uName},
+                </if>
+
+                <if test="uPassword!=null">
+                    #{uPassword},
+                </if>
+                <if test="uEmail!=null">
+                    #{uEmail},
+                </if>
+                <if test="uSex!=null">
+                    #{uSex},
+                </if>
+                <if test="uStatus!=null">
+                    #{uStatus},
+                </if>
+                <if test="uCode!=null">
+                    #{uCode},
+                </if>
+                <if test="uRole!=null">
+                    #{uRole},
+                </if>
+            </trim>
+    </insert>
+
+    <select id="selectCountByUsername" resultType="user">
+        select
+         <include refid="Base_Column_List"></include>
+        from user where u_name = #{username}
+    </select>
+
+    <select id="selectUserByNameAndPwd" resultType="user">
+        select
+            <include refid="Base_Column_List"></include>
+        from user where u_name = #{uName} and u_password = #{uPassword}
+    </select>
+
+    <delete id="deleteByUId">
+        delete from user
+        where u_id = #{uid}
+    </delete>
+
+    <select id="selectUserByNameAndSex" resultType="user">
+        select
+            <include refid="Base_Column_List"></include>
+        from user
+        <where>
+            <if test="uName!=null and uName!=''">
+                u_name like '%' #{uName} '%'
+            </if>
+            <if test="uSex!=null and uSex!=''">
+                and u_sex=#{uSex}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUStatusByUId">
+        update user set u_status = 1 where u_id = #{uId}
+    </update>
+
+    <select id="selectUserById" resultType="user">
+        select
+            <include refid="Base_Column_List"></include>
+        from user where u_id = #{uId}
+    </select>
+
+    <select id="selectUserByName" resultType="user">
+        select
+        <include refid="Base_Column_List"></include>
+        from user where u_name = #{uName}
+    </select>
+</mapper>

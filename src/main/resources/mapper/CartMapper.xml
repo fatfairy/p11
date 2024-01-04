@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.p11.mapper.CartMapper">
+
+    <resultMap id="BaseResultMap" type="com.qf.p11.pojo.Cart">
+            <id property="cId" column="c_id" jdbcType="INTEGER"/>
+            <result property="uId" column="u_id" jdbcType="INTEGER"/>
+            <result property="cCount" column="c_count" jdbcType="DECIMAL"/>
+            <result property="cNum" column="c_num" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        c_id,u_id,c_count,
+        c_num
+    </sql>
+
+    <insert id="insertCartByUid">
+        insert into cart (u_id) values (#{uId})
+    </insert>
+
+    <select id="selectSingleCartByUid" resultType="cart">
+        select
+            <include refid="Base_Column_List"></include>
+        from cart where u_id = #{uId}
+    </select>
+
+    <update id="updateCart">
+        update cart
+        set c_Num = #{cNum},c_Count = #{cCount} where c_id = #{cId}
+    </update>
+
+    <select id="selectCartInfo" resultType="cart">
+        select c_id,u_id,c_count from cart
+        where cart.u_id = #{uId}
+    </select>
+
+    <resultMap id="selectUserCartMap" type="com.qf.p11.vo.CartVO">
+        <id property="cId" column="c_id"></id>
+        <result property="cCount" column="c_count"></result>
+        <result property="cNum" column="c_num"></result>
+        <collection property="products"
+                    select="com.qf.p11.mapper.ProductMapper.selectByCartId"
+                    column="c_id"></collection>
+    </resultMap>
+
+    <select id="selectUserCart" resultMap="selectUserCartMap">
+        select c_id,c_count,c_num from cart
+        inner join cart_product cp on cart.c_id = cp.cid
+        inner join product p on cp.pid = p.p_id
+        where cart.u_id = #{uId}
+        group by c_id
+    </select>
+
+   <update id="updateCartNum">
+       update  cart set c_num = #{num},c_count = #{price} where c_id = #{cId}
+   </update>
+
+    <update id="updateCartCountAndNum">
+        UPDATE cart
+        SET c_count = (
+                SELECT SUM(p_price * num)
+                FROM (
+                         SELECT c.c_id, cp.pid, cp.num
+                         FROM cart c
+                         INNER JOIN cart_product cp ON c.c_id = cp.cid
+                         WHERE c.u_id = #{uId}
+                ) AS subquery
+                         INNER JOIN product p ON subquery.pid = p.p_id
+                GROUP BY subquery.c_id
+            ),
+            c_num = (
+                SELECT SUM(num)
+                FROM (
+                    SELECT num,c.c_id
+                    FROM cart c
+                    INNER JOIN cart_product cp ON c.c_id = cp.cid
+                    WHERE c.u_id = #{uId}
+                ) AS subquery
+                GROUP BY subquery.c_id
+            )
+        WHERE u_id = #{uId}
+    </update>
+
+    <select id="selectCartIdByUid" resultType="int">
+        select c_id from cart where u_id = #{uId}
+    </select>
+
+    <update id="updateResetCartById">
+        update cart set c_count=0,c_num=0 where c_id=#{cId}
+    </update>
+</mapper>

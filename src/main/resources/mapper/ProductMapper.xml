@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.p11.mapper.ProductMapper">
+
+    <resultMap id="BaseResultMap" type="com.qf.p11.pojo.Product">
+            <id property="pId" column="p_id" jdbcType="INTEGER"/>
+            <result property="tId" column="t_id" jdbcType="INTEGER"/>
+            <result property="pName" column="p_name" jdbcType="VARCHAR"/>
+            <result property="pTime" column="p_time" jdbcType="DATE"/>
+            <result property="pImage" column="p_image" jdbcType="VARCHAR"/>
+            <result property="pPrice" column="p_price" jdbcType="DECIMAL"/>
+            <result property="pState" column="p_state" jdbcType="INTEGER"/>
+            <result property="pInfo" column="p_info" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        p_id,t_id,p_name,
+        p_time,p_image,p_price,
+        p_state,p_info
+    </sql>
+
+    <sql id="VO_Column_List">
+        p_id,t_id,p_name,
+        p_time,p_image,p_price,
+        p_state,p_info,num
+    </sql>
+
+    <sql id="NoPid_List">
+        t_id,p_name,
+        p_time,p_image,p_price,
+        p_state,p_info
+    </sql>
+
+    <insert id="insertSingleProduct">
+        insert into product
+            (<include refid="NoPid_List"></include>)
+        values
+            (#{tId},#{pName},#{pTime},#{pImage},#{pPrice},#{pState},#{pInfo})
+    </insert>
+
+    <select id="selectAllProduct" resultType="product">
+        select
+            <include refid="Base_Column_List"></include>
+        from product
+    </select>
+
+    <select id="selectProductByType" resultType="product">
+        select
+            <include refid="Base_Column_List"></include>
+        from product where t_id = #{tId}
+    </select>
+
+    <select id="selectSingleById" resultType="product">
+        select
+            <include refid="Base_Column_List"></include>
+        from product where p_id=#{pId}
+    </select>
+
+    <select id="selectByCartId" resultType="com.qf.p11.vo.ProductVO">
+        select
+            <include refid="VO_Column_List"></include>
+        from product
+        inner join cart_product cp on product.p_id = cp.pid
+        where cp.cid = #{cId}
+    </select>
+
+    <select id="selectAllProductVOFromItemByOid" resultType="com.qf.p11.vo.ProductVO">
+        select
+            item.p_id,t_id,p_name,
+            p_time,p_image,p_price,
+            p_state,p_info,i_num num
+        from product
+        inner join item on product.p_id = item.p_id
+        where o_id=#{oId}
+    </select>
+
+</mapper>

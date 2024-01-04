@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.p11.mapper.OrdersMapper">
+
+    <resultMap id="BaseResultMap" type="com.qf.p11.pojo.Orders">
+            <id property="oId" column="o_id" jdbcType="VARCHAR"/>
+            <result property="uId" column="u_id" jdbcType="INTEGER"/>
+            <result property="aId" column="a_id" jdbcType="INTEGER"/>
+            <result property="oCount" column="o_count" jdbcType="DECIMAL"/>
+            <result property="oTime" column="o_time" jdbcType="TIMESTAMP"/>
+            <result property="oState" column="o_state" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        o_id,u_id,a_id,
+        o_count,o_time,o_state
+    </sql>
+
+    <sql id="NoID_Column_List">
+        u_id,a_id,
+        o_count,o_time,o_state
+    </sql>
+
+    <insert id="insertSingleOrder" useGeneratedKeys="true" keyProperty="oId">
+        insert into orders
+        (<include refid="NoID_Column_List"></include>)
+        values (#{uId},#{aId},#{oCount},#{oTime},#{oState})
+    </insert>
+
+    <select id="selectAllOrderByUid" resultType="orders">
+        select
+            <include refid="Base_Column_List"></include>
+        from orders
+        where u_id = #{uId}
+    </select>
+
+    <resultMap id="selectAllOrderWithAddressByUidMap" type="com.qf.p11.vo.OrdersVO">
+        <id property="oId" column="o_Id"></id>
+        <result property="oTime" column="o_Time"></result>
+        <result property="oState" column="o_State"></result>
+        <result property="oCount" column="o_Count"></result>
+        <result property="aId" column="a_Id"></result>
+        <result property="uId" column="u_Id"></result>
+        <association property="address" javaType="address">
+            <id property="aId" column="a_Id"></id>
+            <result property="uId" column="u_Id"></result>
+            <result property="aDetail" column="a_Detail"></result>
+            <result property="aName" column="a_Name"></result>
+            <result property="aPhone" column="a_Phone"></result>
+            <result property="aState" column="a_State"></result>
+        </association>
+    </resultMap>
+
+    <select id="selectAllOrderWithAddressByUid" resultMap="selectAllOrderWithAddressByUidMap">
+        select o_id,orders.u_id,o_count,o_time,o_state,
+               orders.a_id,a_name,a_phone,a_detail,a_state
+        from orders inner join address on orders.a_id=address.a_id
+        where orders.u_id=#{uId}
+    </select>
+
+    <resultMap id="selectOrderDetailByOid" type="com.qf.p11.vo.OrderDetailVO">
+        <id property="oId" column="o_Id"></id>
+        <result property="oTime" column="o_Time"></result>
+        <result property="oState" column="o_State"></result>
+        <result property="oCount" column="o_Count"></result>
+        <result property="aId" column="a_Id"></result>
+        <result property="uId" column="u_Id"></result>
+        <association property="address"
+                     select="com.qf.p11.mapper.AddressMapper.selectSingleAddressByOid"
+                     column="o_id"></association>
+
+        <collection property="productVOS"
+                    select="com.qf.p11.mapper.ProductMapper.selectAllProductVOFromItemByOid"
+                    column="o_id"></collection>
+    </resultMap>
+
+    <select id="selectOrderDetailByOid" resultMap="selectOrderDetailByOid">
+        select <include refid="Base_Column_List"></include>
+        from orders where o_id=#{oId}
+    </select>
+
+    <update id="updateOStateByOIdInt">
+        update orders set o_state=#{oState} where o_id=#{oId}
+    </update>
+
+
+    <select id="selectAllAdminOrderVO" resultType="com.qf.p11.vo.AdminOrderVO">
+        select
+            o_id,o_count,o_state,o_time,u_name userName
+        from orders inner join user on orders.u_id = user.u_id
+    </select>
+
+</mapper>

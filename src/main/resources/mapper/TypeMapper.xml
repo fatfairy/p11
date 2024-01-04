@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.p11.mapper.TypeMapper">
+
+    <resultMap id="BaseResultMap" type="com.qf.p11.pojo.Type">
+            <id property="tId" column="t_id" jdbcType="INTEGER"/>
+            <result property="tName" column="t_name" jdbcType="VARCHAR"/>
+            <result property="tInfo" column="t_info" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t_id,t_name,t_info
+    </sql>
+
+    <select id="selectAllType" resultType="type">
+        select
+            <include refid="Base_Column_List"></include>
+        from type
+    </select>
+</mapper>
