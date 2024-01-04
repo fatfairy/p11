@@ -14,6 +14,8 @@ import com.qf.p11.vo.OrdersVO;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Resource;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -26,6 +28,7 @@ import java.util.List;
 
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Resource

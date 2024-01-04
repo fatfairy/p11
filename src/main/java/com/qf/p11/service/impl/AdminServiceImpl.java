@@ -10,6 +10,7 @@ import com.qf.p11.pojo.User;
 import com.qf.p11.service.AdminService;
 import com.qf.p11.vo.AdminOrderVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 
 @Service
+@Transactional
 public class AdminServiceImpl implements AdminService {
 
     @Resource

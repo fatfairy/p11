@@ -21,6 +21,5 @@ public class Application {
         for (String s : run.getBeanNamesForType(UserService.class)) {
             System.out.println(s);
         }
-
     }
 }
