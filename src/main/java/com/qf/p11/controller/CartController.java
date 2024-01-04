@@ -3,13 +3,14 @@ package com.qf.p11.controller;
 import com.qf.p11.pojo.User;
 import com.qf.p11.service.UserService;
 import com.qf.p11.vo.CartVO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
+import jakarta.annotation.Resource;
+
 import java.math.BigDecimal;
 
 /**

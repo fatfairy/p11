@@ -13,7 +13,7 @@ import com.qf.p11.vo.OrderDetailVO;
 import com.qf.p11.vo.OrdersVO;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.Date;

@@ -6,12 +6,13 @@ import com.qf.p11.service.UserService;
 import com.qf.p11.vo.CartVO;
 import com.qf.p11.vo.OrderDetailVO;
 import com.qf.p11.vo.OrdersVO;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
+import jakarta.annotation.Resource;
+
 import java.util.List;
 
 /**

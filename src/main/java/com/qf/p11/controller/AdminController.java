@@ -7,6 +7,8 @@ import com.qf.p11.pojo.Type;
 import com.qf.p11.pojo.User;
 import com.qf.p11.service.AdminService;
 import com.qf.p11.vo.AdminOrderVO;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -78,6 +79,7 @@ public class AdminController {
     public String addGoods(Product product, MultipartFile picture, HttpServletRequest req){
 
         System.out.println("------------------"+product);
+
 
         String path = req.getServletContext().getRealPath("upload");
 

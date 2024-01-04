@@ -14,13 +14,13 @@ import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.qf.p11.config.AlipayConfig;
 import com.qf.p11.dto.AliOrderDTO;
 import com.qf.p11.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

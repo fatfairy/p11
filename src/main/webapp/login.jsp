@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page isELIgnored="false"%>
 <%
-	String bashPath=request.getScheme()+"s://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
+	String bashPath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
 <html>
 <head>
